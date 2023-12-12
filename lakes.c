@@ -1,38 +1,36 @@
 #include <stdio.h>
-#include <stdlib.h>
-#include <err.h>
-#include <errno.h>
-#include <assert.h>
-#include <stddef.h>
-#include <string.h>  // Add this header for strcpy
-
-// Function to perform DFS to mark and count the connected water cells
-static void exploreLake(char **map, int x, int y, int width, int height) {
-    if (x < 0 || x >= width || y < 0 || y >= height || map[y][x] == '#' || map[y][x] == 'x') {
-        return;  // Ignore ground cells or already visited cells
-    }
-    map[y][x] = 'x';  // Mark the current water cell as visited
-
-    // Recursively explore horizontally and vertically adjacent water cells
-    exploreLake(map, x + 1, y, width, height);
-    exploreLake(map, x - 1, y, width, height);
-    exploreLake(map, x, y + 1, width, height);
-    exploreLake(map, x, y - 1, width, height);
+void Lake(char **map, int i, int j, int w, int h)
+{
+    if (i < 0 || j < 0)
+        return;
+    if (j >= h || i >= w)
+        return;
+    if (map[j][i] == '#' || map[j][i] == '4')
+        return;
+    map[j][i] = '4';
+    Lake(map, i, j - 1, w, h);
+    Lake(map, i, j + 1, w, h);
+    Lake(map, i - 1, j, w, h);
+    Lake(map, i + 1, j, w, h);
 }
 
-// Main function to count the number of lakes
-int lakes(char **map, int width, int height) {
-    int lakeCount = 0;
-
-    for (int y = 0; y < height; ++y) {
-        for (int x = 0; x < width; ++x) {
-            if (map[y][x] == '.') {
-                // Found an unvisited water cell, start exploring the lake
-                exploreLake(map, x, y, width, height);
-                ++lakeCount;
+int lakes(char **map, int width, int height)
+{
+    int comp = 0;
+    for (int j = 0; j < height; j++)
+    {
+        int i = 0;
+        while (i < width)
+        {
+            if (map[j][i] != '.')
+            {
+                i++;
+                continue;
             }
+            Lake(map, i, j, width, height);
+            comp++;
+            i++;
         }
     }
-
-    return lakeCount;
+    return comp;
 }
