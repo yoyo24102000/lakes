@@ -1,17 +1,24 @@
 #include <stdio.h>
-void Lake(char **map, int i, int j, int w, int h)
+
+typedef struct {
+    char **map;
+    int w;
+    int h;
+} LakeParams;
+
+void Lake(LakeParams *params, int i, int j)
 {
     if (i < 0 || j < 0)
         return;
-    if (j >= h || i >= w)
+    if (j >= params->h || i >= params->w)
         return;
-    if (map[j][i] == '#' || map[j][i] == '4')
+    if (params->map[j][i] == '#' || params->map[j][i] == '4')
         return;
-    map[j][i] = '4';
-    Lake(map, i, j - 1, w, h);
-    Lake(map, i, j + 1, w, h);
-    Lake(map, i - 1, j, w, h);
-    Lake(map, i + 1, j, w, h);
+    params->map[j][i] = '4';
+    Lake(params, i, j - 1);
+    Lake(params, i, j + 1);
+    Lake(params, i - 1, j);
+    Lake(params, i + 1, j);
 }
 
 int lakes(char **map, int width, int height)
@@ -27,7 +34,8 @@ int lakes(char **map, int width, int height)
                 i++;
                 continue;
             }
-            Lake(map, i, j, width, height);
+            LakeParams params = {map, width, height};
+            Lake(&params, i, j);
             comp++;
             i++;
         }
